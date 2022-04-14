@@ -1,17 +1,18 @@
 package com.example.login22_01_19_h1.Menu;
 
-import androidx.annotation.Nullable;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
-import android.app.ProgressDialog;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,330 +20,133 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.login22_01_19_h1.Constants;
-import com.example.login22_01_19_h1.DBHelper;
 import com.example.login22_01_19_h1.MainActivity;
+import com.example.login22_01_19_h1.R;
 import com.example.login22_01_19_h1.RequestHandlerSingleton;
 import com.example.login22_01_19_h1.SharedPrefManger;
-import com.example.login22_01_19_h1.SpinnerCar.CarItemAdapterSecond;
-import com.example.login22_01_19_h1.SpinnerCar.CarRowItem;
-import com.example.login22_01_19_h1.SpinnerCompany.CompanyItemAdapter;
-//import com.example.login22_01_19_h1.MainActivitySpinner;
-import com.example.login22_01_19_h1.R;
-import com.example.login22_01_19_h1.SpinnerCompany.RowItem;
-import com.example.login22_01_19_h1.SpinnerType.RowItemType;
-import com.example.login22_01_19_h1.SpinnerType.TypeItemAdapter;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.*;
+import java.util.Map;
 
 
 public class ProfileFragment extends Fragment {
-    private ArrayList<RowItem> mCompanyBrandList;
-    private CompanyItemAdapter mAdapter;
+    //    component inital  Declaeration
+    TextView username,email;
+    EditText oldpass, newpass;
+    ImageView avater;
+    Drawable myDrawable;
+    Button reset;
 
-    private ArrayList<CarRowItem> mCars;
-    private CarItemAdapterSecond mAdapterSecond;
+    String encrypt="";
+    String encrypt2="";
 
-    private ArrayList<RowItemType> mCarTypeList;
-    private TypeItemAdapter mTypeAdapter;
-
-    Spinner spinnerComapnires;
-    Spinner spinnerCar;
-    Spinner spinnerType;
-
-    ArrayList<CarRowItem> filtered;
-
-    Button addCar;
-
-    int UserID;
-    String OurCarID;
-
-
-    String typecar = "";
-    //String Company = "";
-    public String car = "";
-    static int counterCarId = 3;
-    DBHelper dbHelper;
-
-    private ArrayList<CarRowItem> mCompany;
-    private ArrayList<CarRowItem> mFordCar;
-    private ArrayList<CarRowItem> mHyundaiCar;
-    private ArrayList<CarRowItem> mMercedesCar;
-
-
-    private ProgressDialog progressDialog;
-
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        return inflater.inflate(R.layout.activity_spinner_main, container, false);
-
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        progressDialog = new ProgressDialog(getActivity());
-        spinnerComapnires = (Spinner) getView().findViewById(R.id.spinner_comapnires);
-        spinnerCar = (Spinner) getView().findViewById(R.id.spinner_car);
-        spinnerType = (Spinner) getView().findViewById(R.id.spinner_type);
-        filtered = new ArrayList<>();
-        addCar = getView().findViewById(R.id.ButtonSpinnerPage);
-        addCar.setVisibility(View.GONE);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_profile, container, false);
+    }
 
+    public void onViewCreated(View view, @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        // component Declaeration and link
+        avater = getView().findViewById(R.id.UserImage);
+        username = getView().findViewById(R.id.UserName);
+        email = getView().findViewById(R.id.theEmail);
+        oldpass = getView().findViewById(R.id.editTextoldPassword);
+        newpass = getView().findViewById(R.id.editTextnewPassword);
+        myDrawable = getResources().getDrawable(R.drawable.useravater);
+        reset = getView().findViewById(R.id.restPass);
 
-        // 1- Get cars data from DataBase
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_CompanyCars_RETRIVE, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String json_re) {
-                progressDialog.dismiss();
+        avater.setImageDrawable(myDrawable);
+        username.setText(SharedPrefManger.getInstance(MainActivity.getAppContext()).getUserName());
+        email.setText(SharedPrefManger.getInstance(MainActivity.getAppContext()).getUserEmail());
 
-                try {
-                    JSONArray array = new JSONArray(json_re);
-                    mCompanyBrandList = new ArrayList<>();
-
-                    for (int i = 0; i < array.length(); i++) {
-                        //getting product object from json array
-                        JSONObject jsonData = array.getJSONObject(i);
-                        //adding the product to product list
-                        mCompanyBrandList.add(new RowItem(
-                                jsonData.getString("CompanyID"),
-                                jsonData.getString("CompanyName"),
-                                jsonData.optString("Logo")
-                        ));
-                    }
-
-                    showCompanySpinner();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.hide();
-//                        Toast.makeText(getContext().getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-
-        }) {
-
-        };
-
-        RequestHandlerSingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
-
-
-        ///////////////////////////////////////////////////////////////////////////////////
-
-        // 1- Get cars data from DataBase
-        StringRequest stringRequest2 = new StringRequest(Request.Method.POST, Constants.URL_CARS_RETRIVE, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String json_re) {
-                System.out.println(json_re);
-                progressDialog.dismiss();
-                //System.out.println("---------------- response :" + json_re);
-
-                try {
-                    JSONArray array = new JSONArray(json_re);
-                    mCars = new ArrayList<>();
-
-                    for (int i = 0; i < array.length(); i++) {
-                        //getting product object from json array
-                        JSONObject jsonData = array.getJSONObject(i);
-                        //adding the product to product list
-                        mCars.add(new CarRowItem(
-                                jsonData.getString("OurCarID"),
-                                jsonData.getString("CompanyID"),
-                                jsonData.getString("CarType"),
-                                jsonData.getString("CarName"),
-                                jsonData.optString("CarImg")
-                        ));
-                    }
-                    System.out.println("len = "+mCars.size());
-//                    mAdapterSecond = new CarItemAdapterSecond(getActivity(), mCars);
-//                    spinnerCar.setAdapter(mAdapterSecond);
-
-
-                    spinnerComapnires.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            RowItem clickedItem = (RowItem) parent.getItemAtPosition(position);
-                            String clickedItemCompanyNameS = (clickedItem.getCompanyName());
-
-                            filtered = FilterCompany(mCompanyBrandList,mCars , clickedItem.getCompanyName());
-                            mAdapterSecond = new CarItemAdapterSecond(getActivity(), filtered);
-                            spinnerCar.setAdapter(mAdapterSecond);
-
-                            showTypeSpinner();
-
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
-                    });
-
-                    spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            RowItemType clickedItem = (RowItemType) parent.getItemAtPosition(position);
-                            ArrayList<CarRowItem> filteredtype = FilterType(filtered , clickedItem.getTypeName());
-                            mAdapterSecond = new CarItemAdapterSecond(getActivity(), filteredtype);
-                            spinnerCar.setAdapter(mAdapterSecond);
-                        }
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
-                    });
-
-                    spinnerCar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            CarRowItem clickedItem = (CarRowItem) parent.getItemAtPosition(position);
-                            UserID = SharedPrefManger.getInstance(MainActivity.getAppContext()).getUserId();
-                            OurCarID = clickedItem.getOurCarID();
-                            addCar.setVisibility(View.VISIBLE);
-
-                        }
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
-                    });
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.hide();
-//                        Toast.makeText(getContext().getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-
-        }) {
-
-        };
-
-        RequestHandlerSingleton.getInstance(getActivity()).addToRequestQueue(stringRequest2);
-
-        addCar.setOnClickListener(new View.OnClickListener() {
+        reset.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_USERCARS, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        progressDialog.dismiss();
-                        if (response.contains("Your Car Inforamation Saved successfully")) {
-                            System.out.println("--------------------Done -----------");
-                            Toast.makeText(getContext(), "Your Car Inforamation Saved successfully!", Toast.LENGTH_LONG).show();
-                            //take him to next page
-                        } else {
-                            System.out.println("--------------------Full sorry -----------");
-                            Toast.makeText(getContext(), "Failed To Save Your Car Inforamation", Toast.LENGTH_LONG).show();
-//                            refresh();
+                // Do something in response to button click
+
+                String oldp = oldpass.getText().toString();
+                String newp = newpass.getText().toString();
+
+
+                System.out.println("here is the oldpass : "+oldp);
+                if(!oldp.isEmpty() && !newp.isEmpty()){
+                    //Toast.makeText(getContext(), "Good", Toast.LENGTH_LONG).show();
+                    //Check if his old pass is correct
+                    //If so then change it to the new one
+                    //else ? tell him its wrong
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_RESER_PASSWORD, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            System.out.println("All response :"+response);
+                            if (response.contains("Password Changed")) {
+                                Toast.makeText(getContext(), "Password Changed!", Toast.LENGTH_LONG).show();
+                            } else if(response.contains("Wrong Password")) {
+                                Toast.makeText(getContext(), "Wrong old Password! Please try again", Toast.LENGTH_LONG).show();
+                            }else {
+                                Toast.makeText(getContext(), "Connection Error", Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
-                    }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
 
-                }) {
-                    @androidx.annotation.Nullable
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        System.out.println("Test Mes -------- edit database");
-                        Map<String, String> params = new HashMap<>();
-                        params.put("UserID", String.valueOf(UserID));
-                        params.put("OurCarID", OurCarID );
-                        return params;
-                    }
-                };
+                        }
 
-                RequestHandlerSingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
+                    }) {
+                        @androidx.annotation.Nullable
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("UserID", String.valueOf(SharedPrefManger.getInstance(MainActivity.getAppContext()).getUserId()));
+                            params.put("Password",oldp );
+                            params.put("NewPassword",newp );
+                            return params;
+                        }
+                    };
+                    RequestHandlerSingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
 
+                }else{
+                    Toast.makeText(getContext(), "Sorry! Please fill the old and new password", Toast.LENGTH_LONG).show();
+                }
 
             }
         });
 
-    }
-    public void showCompanySpinner ( ) {
-        mAdapter = new CompanyItemAdapter(getActivity(), mCompanyBrandList);
-        spinnerComapnires = (Spinner) getView().findViewById(R.id.spinner_comapnires);
-        spinnerComapnires.setAdapter(mAdapter);
-    }
-    public void showTypeSpinner ( ) {
-        ArrayList<RowItemType> types = findAllTypes(filtered);
-        mTypeAdapter = new TypeItemAdapter(getActivity(), types);
-        spinnerType.setAdapter(mTypeAdapter);
+
     }
 
-    public ArrayList<CarRowItem> FilterType ( ArrayList <CarRowItem> filteredcar , String type ) {
-        ArrayList<CarRowItem> filtered = new ArrayList<>();
-        for (int counter = 0; counter < filteredcar.size(); counter++) {
-            if (filteredcar.get(counter).getCarType().equalsIgnoreCase(type)){
-                filtered.add(filteredcar.get(counter));
-            }
-        }
-        return filtered;
-    }
-    public ArrayList<CarRowItem> FilterCompany ( ArrayList <RowItem> comp ,ArrayList <CarRowItem> allcars , String Company ) {
-        String compID="";
-        for (int counter = 0; counter < comp.size(); counter++) {
-
-            if (comp.get(counter).getCompanyName().equalsIgnoreCase(Company)){
-                compID= comp.get(counter).getmCompanyID();
-                break;
-            }
-        }
-        System.out.println("The sent comp : "+Company);
-        ArrayList<CarRowItem> filtered = new ArrayList<>();
-        for (int counter = 0; counter < allcars.size(); counter++) {
-            System.out.println("the brand name in list : "+allcars.get(counter).getmCompanyID());
-            if (allcars.get(counter).getmCompanyID().equalsIgnoreCase(compID)){
-                System.out.println("match");
-                filtered.add(allcars.get(counter));
-            }
-        }
-        return filtered;
-    }
-
-    public ArrayList<RowItemType> findAllTypes ( ArrayList <CarRowItem> allcars ) {
-        ArrayList<RowItemType> types = new ArrayList<>();
-
-        for (int counter = 0; counter < allcars.size(); counter++) {
-            boolean found = false;
-            if (counter==0){
-                types.add(new RowItemType(allcars.get(counter).getCarType()));
-            }
-            for (int i =0 ; i< types.size() ; i++) {
-                if (types.get(i).getTypeName().equalsIgnoreCase(allcars.get(counter).getCarType())){
-                    found = true;
-                    break;
-                }
-            }
-
-            if(found==false){
-                types.add(new RowItemType(allcars.get(counter).getCarType()));
-            }
-        }
-        return types;
-    }
-
+//    public static SecretKey generateKey(String password)
+//            throws NoSuchAlgorithmException
+//    {
+//        SecretKeySpec secret = new SecretKeySpec(password.getBytes(), "AES");
+//        return secret ;
+//    }
+//
+//    public static byte[] encryptMsg(String message, SecretKey secret)
+//            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException
+//    {
+//        /* Encrypt the message. */
+//        Cipher cipher = null;
+//        cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+//        cipher.init(Cipher.ENCRYPT_MODE, secret);
+//        byte[] cipherText = cipher.doFinal(message.getBytes("UTF-8"));
+//        return cipherText;
+//    }
+//
+//    public static String decryptMsg(byte[] cipherText, SecretKey secret)
+//            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException
+//    {
+//        /* Decrypt the message, given derived encContentValues and initialization vector. */
+//        Cipher cipher = null;
+//        cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+//        cipher.init(Cipher.DECRYPT_MODE, secret);
+//        String decryptString = new String(cipher.doFinal(cipherText), "UTF-8");
+//        return decryptString;
+//    }
 }

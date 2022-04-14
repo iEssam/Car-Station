@@ -1,9 +1,8 @@
 package com.example.login22_01_19_h1.sliderhome;
 
 
-
-import android.app.Activity;
-import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,26 +21,15 @@ import java.util.ArrayList;
 
 public class adapterCard extends RecyclerView.Adapter<adapterCard.PhoneViewHold>  {
 
-    private Context context;
-    private Activity activity;
-    private ArrayList carname, cartype, carid;
-
     ArrayList<CardHelper> Cardinfo;
     final private ListItemClickListener mOnClickListener;
+    private int selectedItemPosition = -1;
+
 
     public adapterCard(ArrayList<CardHelper> phoneLaocations, HomeFragment listener) {
         this.Cardinfo = phoneLaocations;
         mOnClickListener = listener;
     }
-
-    /*public adapterCard(Activity activity, ArrayList carname, ArrayList cartype, ArrayList carid , SettingsFragment listener){
-        this.activity = activity;
-        //this.context = context;
-        this.carname = carname;
-        this.cartype = cartype;
-        this.carid = carid;
-        mOnClickListener = listener;
-    }*/
 
     @NonNull
 
@@ -55,8 +43,19 @@ public class adapterCard extends RecyclerView.Adapter<adapterCard.PhoneViewHold>
     @Override
     public void onBindViewHolder(@NonNull PhoneViewHold holder, int position) {
         CardHelper carhelper = Cardinfo.get(position);
-        holder.image.setImageResource(carhelper.getImage());
-        holder.title.setText(carhelper.getTitle());
+        holder.image.setImageBitmap(carhelper.getmCarImage());
+        holder.title.setText(carhelper.getCarName());
+
+        Resources res = MainActivity.getAppContext().getResources();
+        if(selectedItemPosition==position){
+            holder.relativeLayout.setBackgroundTintList(ColorStateList.valueOf(res.getColor(R.color.CarStation4, MainActivity.getAppContext().getTheme())));
+//            holder.shape.setBackgroundColor(Color.parseColor("#567845"));
+        }
+        else
+        {
+            holder.relativeLayout.setBackgroundTintList(ColorStateList.valueOf(res.getColor(R.color.CarStation5, MainActivity.getAppContext().getTheme())));
+//            holder.shape.setBackgroundColor(Color.parseColor("#A2B38B"));
+        }
     }
 
     @Override
@@ -74,16 +73,11 @@ public class adapterCard extends RecyclerView.Adapter<adapterCard.PhoneViewHold>
         TextView title;
         RelativeLayout relativeLayout;
 
-        public int getItemCount() {
-            return carid.size();
-        }
-
-
         public PhoneViewHold(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             //hooks
-
+            //background_color
             image = itemView.findViewById(R.id.car_image);
             title = itemView.findViewById(R.id.phone_title);
             relativeLayout = itemView.findViewById(R.id.background_color);
@@ -94,6 +88,8 @@ public class adapterCard extends RecyclerView.Adapter<adapterCard.PhoneViewHold>
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onphoneListClick(clickedPosition, title.getText().toString(),Cardinfo);
+            selectedItemPosition = getAdapterPosition();
+            notifyDataSetChanged();
         }
     }
 

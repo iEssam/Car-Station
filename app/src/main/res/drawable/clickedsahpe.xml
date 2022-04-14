@@ -2,11 +2,11 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="@color/logineditbox"></solid>
+    <solid android:color="@color/redbutton"></solid>
 
     <stroke
         android:width="2dp"
-        android:color="@color/CarStation8"></stroke>
+        android:color="@color/redbutton"></stroke>
 
     <padding
         android:left="5dp"

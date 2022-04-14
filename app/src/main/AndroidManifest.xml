@@ -3,8 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.login22_01_19_h1">
 
+    <!--
+     The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+     Google Maps Android API v2, but you must specify either coarse or fine
+     location permissions for the "MyLocation" functionality.
+-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
 
     <application
@@ -21,10 +32,6 @@
         <activity
             android:name=".MainActivityNotification"
             android:exported="false" />
-        <activity
-            android:name=".MainActivity_Card_History"
-            android:exported="false"
-            tools:ignore="Instantiatable" />
 
         <activity
             android:name=".Confirmation_Appointment"
@@ -46,6 +53,9 @@
             android:name=".LoginSingup.Login_MySql"
             android:exported="false" />
         <activity
+            android:name=".MainActivityOcr"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -54,6 +64,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="ocr" />
         <receiver android:name=".ReminderBreodcast" />
     </application>
 

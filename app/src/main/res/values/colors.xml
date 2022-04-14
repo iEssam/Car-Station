@@ -24,4 +24,15 @@
     <color name="Snow">#fffafa</color>
     <color name="redbutton">#900C3F</color>
 
+
+    <color name="CarStation1">#0B3954</color>
+    <color name="CarStation2">#0A5C70</color>
+    <color name="CarStation3">#087E8B</color>
+    <color name="CarStation4">#64ABBB</color>
+    <color name="CarStation5">#BFD7EA</color>
+    <color name="CarStation6">#DF99A5</color>
+    <color name="CarStation7">#FF5A5F</color>
+    <color name="CarStation8">#E43C42</color>
+    <color name="CarStation9">#C81D25</color>
+
 </resources>

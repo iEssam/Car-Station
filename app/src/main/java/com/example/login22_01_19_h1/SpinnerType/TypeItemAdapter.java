@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,7 +41,6 @@ public class TypeItemAdapter extends ArrayAdapter<RowItemType> {
                 );
             }
 
-            ImageView imageViewBrand = convertView.findViewById(R.id.image_view_Type_image);
             TextView textViewName = convertView.findViewById(R.id.text_view_name_Type_Spinner);
 
             RowItemType currentItem = getItem(position);

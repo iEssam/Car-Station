@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,161 +8,164 @@
     android:background="#F7FFFFFF"
     tools:context=".MainActivity">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+<!--    <Button-->
+<!--        android:id="@+id/Next"-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_below="@+id/Scroll1"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_marginStart="10dp"-->
+<!--        android:layout_marginTop="1dp"-->
+<!--        android:backgroundTint="@color/CarStation2"-->
+<!--        android:fontFamily="sans-serif-black"-->
+<!--        android:padding="1dp"-->
+<!--        android:text="Make an Appintment"-->
+<!--        android:textColor="#FFFFFF"-->
+<!--        android:textSize="16sp" />-->
 
+<!--    <Button-->
+<!--        android:id="@+id/remove"-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:shadowRadius="@android:integer/config_longAnimTime"-->
+<!--        android:layout_below="@+id/Scroll1"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_marginStart="10dp"-->
+<!--        android:layout_marginTop="1dp"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:layout_toEndOf="@+id/Next"-->
+<!--        android:backgroundTint="@color/CarStation8"-->
+<!--        android:fontFamily="sans-serif-black"-->
+<!--        android:padding="1dp"-->
+<!--        android:text="Remove Car"-->
+<!--        android:textColor="#FFFFFF"-->
+<!--        android:textSize="16sp" />-->
 
-        <Button
-            android:id="@+id/Next"
-            android:layout_width="100dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="600dp"
-            android:layout_marginLeft="150dp"
-            android:background="@color/orange"
-            android:backgroundTint="@color/orange"
-            android:fontFamily="sans-serif-black"
-            android:padding="10dp"
-            android:text="NexT"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:background="#F7FFFFFF"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
+    <ScrollView
+                android:id="@+id/Scroll1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:background="#F7FFFFFF"
+                android:layout_marginBottom="0dp"
+                android:paddingBottom="0dp"
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="20dp"
-                    android:layout_marginTop="1dp"
+
                     android:orientation="vertical">
 
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:ignore="UselessParent">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:ignore="UselessParent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/all_phones"
+                                android:textAllCaps="true"
+                                android:textSize="34sp" />
+
+
+                            <Button
+                                android:id="@+id/addnewcar"
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:text="Add new car"
+                                android:textColor="@color/CarStation1"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                tools:ignore="RelativeOverlap" />
+
+
+                        </RelativeLayout>
+
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/my_recycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+
+                        </androidx.recyclerview.widget.RecyclerView>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:id="@+id/addcarmes"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/all_phones"
-                            android:textAllCaps="true"
-                            android:textSize="34sp" />
-
-
-                        <Button
-                            android:id="@+id/addnewcar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            tools:ignore="RelativeOverlap"
-                            android:text="Add new car"
-                            style="@style/Widget.MaterialComponents.Button.TextButton" />
-
-
-
-                    </RelativeLayout>
-
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/my_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-        </ScrollView>
-
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="270dp"
-            android:background="#F7FFFFFF">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:ignore="UselessParent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Upcoming Appintment"
+                            android:text=""
                             android:textAllCaps="false"
-                            android:textSize="28sp" />
+                            android:textSize="18sp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:contextClickable="true"
-                            android:text="@string/view_all"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            tools:ignore="RelativeOverlap" />
+                            android:layout_marginBottom="10dp"
+                            tools:ignore="UselessParent">
+
+                            <Button
+                                android:id="@+id/Next"
+                                android:layout_width="180dp"
+                                android:layout_height="60dp"
+                                android:layout_alignParentStart="true"
+                                android:backgroundTint="@color/CarStation2"
+                                android:fontFamily="sans-serif-black"
+                                android:padding="2dp"
+                                android:layout_marginBottom="0dp"
+                                android:text="Make an Appintment"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp" />
+
+                            <Button
+                                android:id="@+id/remove"
+                                android:layout_width="180dp"
+                                android:layout_height="60dp"
+                                android:shadowRadius="@android:integer/config_longAnimTime"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="1dp"
+                                android:layout_marginEnd="10dp"
+                                android:backgroundTint="@color/CarStation8"
+                                android:fontFamily="sans-serif-black"
+                                android:padding="0dp"
+                                android:text="Remove Car"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:ignore="UselessParent">
+
+                            <TextView
+                                android:id="@+id/upcomingtext"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textAllCaps="false"
+                                android:textSize="28sp" />
 
 
-                    </RelativeLayout>
+                        </RelativeLayout>
 
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/upcoming_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
-
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/upcoming_recycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </ScrollView>
 
-        </ScrollView>
-
-        <TextView
-            android:id="@+id/addcarmes"
-            android:width="280dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textAllCaps="false"
-            android:textSize="18sp"
-            android:layout_marginTop="100dp"
-            android:layout_marginLeft="60dp"/>
-
-
-    </RelativeLayout>
-
-
-
-</LinearLayout>
+</RelativeLayout>

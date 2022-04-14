@@ -11,14 +11,12 @@ public class SharedPrefManger {
     private static final String KEY_USERNAME = "username";
     private static final String KEY_USER_EMAIL = "useremail";
     private static final String KEY_USER_ID = "userid";
-    int Id;
+    String Id;
     String Username;
     String Email;
 
     private SharedPrefManger(Context context) {
         mCtx = context;
-
-
     }
 
     public static synchronized SharedPrefManger getInstance(Context context) {
@@ -28,12 +26,11 @@ public class SharedPrefManger {
         return instance;
     }
 
-    public boolean userLogin(int id, String username, String email) {
-
+    public boolean userLogin(String id, String username, String email) {
 
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(KEY_USER_ID, id);
+        editor.putString(KEY_USER_ID, id);
         editor.putString(KEY_USER_EMAIL, email);
         editor.putString(KEY_USERNAME, username);
         editor.apply();
@@ -51,7 +48,6 @@ public class SharedPrefManger {
     }
 
     public boolean Logout() {
-
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
@@ -62,21 +58,19 @@ public class SharedPrefManger {
 
     public String getUserName() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-
-        return sharedPreferences.getString(KEY_USERNAME, null);
+        return sharedPreferences.getString(KEY_USERNAME, "");
 
     }
 
     public String getUserEmail() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_USER_EMAIL, null);
+        return sharedPreferences.getString(KEY_USER_EMAIL, "");
 
     }
 
-    public int getUserId() {
+    public String getUserId() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-
-        return sharedPreferences.getInt(KEY_USER_ID, -1);
+        return sharedPreferences.getString(KEY_USER_ID, "");
 
     }
 

@@ -17,19 +17,11 @@
             android:icon="@drawable/ic_person"
             android:title="Profile"
             />
-        <item
-            android:id="@+id/nav_Reservation"
-            android:icon="@drawable/book_online_24"
-            android:title="Reservation" />
 
         <item
             android:id="@+id/nav_Histroy"
             android:icon="@drawable/ic_history"
             android:title="History" />
-        <item
-            android:id="@+id/nav_Centers"
-            android:icon="@drawable/ic_history"
-            android:title="Centers" />
 
     </group>
 

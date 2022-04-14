@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,26 +20,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.login22_01_19_h1.Constants;
 import com.example.login22_01_19_h1.Dates;
 import com.example.login22_01_19_h1.DatesAdapter;
+import com.example.login22_01_19_h1.MainActivity;
 import com.example.login22_01_19_h1.R;
 import com.example.login22_01_19_h1.RequestHandlerSingleton;
-
+import com.example.login22_01_19_h1.SharedPrefManger;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,17 +51,24 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
     DatesAdapter datesadapter;
     ArrayList<Button> times = new ArrayList<>();
     ViewGroup layout;
-    String[][] shcdel;
     int dayposition;
     private ProgressDialog progressDialog;
     String[][] calender = new String[50][20];
     TextView feedback;
     Button confirm;
+    String CompanyID,MCenterID,CarID;
+    int skipday =0;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            CompanyID = bundle.getString("CompanyID", "");
+            MCenterID = bundle.getString("MCenterID", "");
+            CarID = bundle.getString("CarID", "");
+        }
         return inflater.inflate(R.layout.activity_main_card_date, container, false);
 
     }
@@ -109,8 +118,12 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
         Button b16 = getView().findViewById(R.id.b16);
         times.add(b16);
 
+        //loop throug all buttons and set on click for them and View.GONE
         for (int i = 0; i < times.size(); i++) {
             Log.println(Log.ASSERT, "ARRAY SSS", times.get(i) + " ");
+            times.get(i).setText("");
+            times.get(i).setBackgroundTintList(getActivity().getColorStateList(R.color.buttoncolors));
+            times.get(i).setVisibility(View.GONE);
             times.get(i).setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     for (int i = 0; i < times.size(); i++) {
@@ -133,46 +146,30 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
     private void DateRecycler() {
 
 
-        Bundle bun = getArguments();
-        if (bun != null) {
-            String value = bun.getString("VALUE");
-            Log.println(Log.ASSERT, "value :", "" + value);
-        }
-        System.out.println("Test Mes -------- Making stringRequest ");
-
+        //Get SCHEDULE from the database based on the center user select
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_SCHEDULE_RETRIVE, new Response.Listener<String>() {
             @Override
             public void onResponse(String json_re) {
-                System.out.println("Test Mes -------- onResponse");
                 progressDialog.dismiss();
                 JSONArray jsonArray = null;
                 //Essam
                 try {
                     jsonArray = new JSONArray(json_re);
                     JSONObject jsonResponse = jsonArray.getJSONObject(0);
-//                    dates.clear();
                     JSONArray jsonArray_carS = jsonResponse.getJSONArray("schedInfo");
-                    Log.println(Log.ASSERT, "jsonArray_carS", jsonArray_carS.toString());
-                    System.out.println("Testing ---------------------  onResponse 2");
                     for (int i = 0; i < jsonArray_carS.length() && i < 160; i++) {
-                        System.out.println("--------lenght : " + jsonArray_carS.length());
                         JSONObject responsS = jsonArray_carS.getJSONObject(i);
                         String DateString = responsS.getString("date").trim();
                         String TimeString = responsS.getString("Time").trim();
                         String DayString = responsS.getString("Day").trim();
                         String Avaliable = responsS.getString("Avilibality").trim();
-
-                        Log.println(Log.ASSERT, "DateString", DateString);
-                        Log.println(Log.ASSERT, "DayString", DayString);
-                        //Essam
-                        System.out.println("Testing ---------------------  onResponse 3");
-
+                        System.out.println("is avil - : "+Avaliable);
+                        // get only Avaliable time slot
                         if (Avaliable.equalsIgnoreCase("Avaliable")) {
                             if (calender[0][0] == null) {
                                 calender[0][0] = DayString;
                                 calender[0][1] = DateString;
                                 calender[0][2] = TimeString;
-                                System.out.println("Testing --------------------- inside if");
                             } else {
                                 boolean check = false;
                                 int k = 0;
@@ -199,15 +196,12 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
                                     calender[k][1] = DateString;
                                     calender[k][2] = TimeString;
                                 }
-                                System.out.println("Testing --------------------- inside else if");
                             }
                         } else {
                             System.out.println("Testing ---------------------  not Avaliable");
-
                         }
                     }
                 } catch (JSONException e) {
-                    System.out.println("Testing ---------------------  JSONException Error");
                     e.printStackTrace();
                 }
 
@@ -222,8 +216,6 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
                         System.out.println(); //change line on console as row comes to end in the matrix.
                     }
                 }
-
-                System.out.println("Test Mes -------- Calling laststep");
                 laststep();
             }
         }, new Response.ErrorListener() {
@@ -235,32 +227,37 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
             }
 
         }) {
-
-
             @androidx.annotation.Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                int i = 0;
-//                params.put("Booked",  "1");
+                // prams the Mcenter ID
+                params.put("MCenterID",MCenterID);
                 return params;
             }
         };
-
-//        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-//        requestQueue.add(stringRequest);
-//        requestQueue.start();
-
+        //Activate Request
         RequestHandlerSingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
-
-        System.out.println("Testing Done !! ----- ");
     }
 
     public void laststep() {
+
+        // to add the dates we got from the database to recyclerview ( only today and after )
         for (int i = 0; i < calender.length && calender[i][0] != null; i++) {
-            Dates date = new Dates(calender[i][1], calender[i][0]);
-            //Dates date = new Dates(textdate[i], daysname[i]);
-            dates.add(date);
+            if (i==0){
+                int result = fortmatDate(calender[i][1]);
+                if (result >=0){
+                    Dates date = new Dates(calender[i][1], calender[i][0]);
+                    dates.add(date);
+
+                }else {
+                    skipday=1;
+                }
+            }else {
+                Dates date = new Dates(calender[i][1], calender[i][0]);
+                dates.add(date);
+            }
+
         }
         // design herozintal layout
         // Initialize dateAdapter
@@ -270,7 +267,7 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        // hide all time
+        // hide all time button
         layout = getView().findViewById(R.id.layout_container_buttons);
         for (int i = 0; i < layout.getChildCount(); i++) {
             View child = layout.getChildAt(i);
@@ -278,31 +275,128 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
                 Button button = (Button) child;
                 button.setText("");
                 button.setBackgroundTintList(getActivity().getColorStateList(R.color.buttoncolors));
-                //button.setBackgroundResource(android.R.drawable.btn_default);
                 button.setVisibility(View.GONE);
             }
         }
 
     }
+    // method get a string date and convert it to DATE then compare it with Today Date
+    public int fortmatDate(String datein) {
+
+
+
+        String DateForConvert=datein;
+        String TimeForConvert = "15:30";
+
+        //TimeForConvert =TimeForConvert.split(":",-2)[0];
+
+        DateForConvert = DateForConvert +" 15:30:00";
+
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dt;
+        int result =-2 ;
+        try {
+            dt = sdf.parse(DateForConvert);
+            result = dt.compareTo(date);
+            System.out.println("sent "+dt.toString());
+            System.out.println("now "+ date.toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    // method to compare the time with current time
+    public int fortmatTime(String time) {
+        String DateForConvert;
+        String TimeForConvert = time;
+        switch(TimeForConvert) {
+            case "1:00":
+                TimeForConvert = "13:00";
+                break;
+            case "1:30":
+                TimeForConvert = "13:30";
+                break;
+            case "2:00":
+                TimeForConvert = "14:00";
+                break;
+            case "2:30":
+                TimeForConvert = "14:30";
+                break;
+            case "3:00":
+                TimeForConvert = "15:00";
+                break;
+            case "3:30":
+                TimeForConvert = "15:30";
+                break;
+            default:
+                // code block
+        }
+        Date datetemp = new Date();
+        SimpleDateFormat dateonly = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateonlynow = dateonly.format(datetemp);
+        DateForConvert = dateonlynow +" " +TimeForConvert+":00";
+        Date date = new Date();
+
+        String offtime = dateonlynow +" 15:30:00";
+        int istoday=-1;
+        Date today;
+        try {
+            today = sdf.parse(offtime);
+            istoday = today.compareTo(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Date dt;
+        int result =-2 ;
+        if (istoday<0){
+            result=1;
+        }else{
+            try {
+                dt = sdf.parse(DateForConvert);
+                result = dt.compareTo(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
 
 
     @Override
-    public void onDateClick(int position) {
+    public void onDateClick(int position) { // When a date selected
         dayposition = position;
         clearbuttons();
-        for (int i = 0; i < layout.getChildCount() && calender[position][i + 2] != null; i++) {
+        String [] time = new String[16];
+        // get the time and put it in Time array
+        for (int i=2,t=0;i<calender[position+skipday].length && calender[position+skipday][i] != null; i++){
+            if (position==0){
+                int result = fortmatTime(calender[position+skipday][i]);
+                if (result>=0){
+                    time[t]=calender[position+skipday][i];
+                    t++;
+                }
+            }else{
+                time[t]=calender[position+skipday][i];
+                t++;
+
+            }
+
+        }
+        // show the user the time
+        for (int i = 0; i < time.length && time[i] != null ; i++) {
             View child = layout.getChildAt(i);
             if (child instanceof Button) {
                 Button button = (Button) child;
-                button.setText(calender[position][i + 2]);
-//                int drawable = R.drawable.red_button_border;
-//                button.setBackgroundResource(drawable);
+                button.setText(time[i]);
                 button.setVisibility(View.VISIBLE);
+
             }
         }
     }
 
-    public void clearbuttons() {
+    public void clearbuttons() { // to reset and hide all buttons
         confirm.setVisibility(View.GONE);
         for (int i = 0; i < layout.getChildCount(); i++) {
             View child = layout.getChildAt(i);
@@ -318,15 +412,13 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
 
     public void appointmentInfo(Button button) {
         resetcolors();
-        boolean aviliblity = false;
         feedback.setText("");
-        //button.setBackgroundColor(Color.parseColor("#87431D"));
         button.setSelected(true);
         button.setTextColor(Color.parseColor("#ffffff"));
+        // when the user select a time confirm button will be shown
         confirm.setVisibility(View.VISIBLE);
         confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Do something in response to button click
                 // check aviliblity first usnig php requset with lock
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_SCHEDULE_Update, new Response.Listener<String>() {
                     @Override
@@ -334,8 +426,11 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
                         progressDialog.dismiss();
                         if (response.contains("Done")) {
                             System.out.println("--------------------Done -----------");
-                            Toast.makeText(getContext(), "Thanks!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Booked successfully!", Toast.LENGTH_LONG).show();
                             //take him to next page
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                                    new HomeFragment()).commit();
                         } else {
                             System.out.println("--------------------Full sorry -----------");
                             Toast.makeText(getContext(), "Sorry! The requested time has already been filled, the available times have been updated, please rebook", Toast.LENGTH_LONG).show();
@@ -352,27 +447,20 @@ public class BookingFragment extends Fragment implements DatesAdapter.OnDateList
                     @androidx.annotation.Nullable
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
-                        System.out.println("Test Mes -------- edit database");
                         Map<String, String> params = new HashMap<>();
-                        params.put("date", calender[dayposition][1]);
+                        params.put("UserID", String.valueOf(SharedPrefManger.getInstance(MainActivity.getAppContext()).getUserId()));
+                        params.put("MCenterID",MCenterID);
+                        params.put("CarID",CarID);
+                        params.put("date", calender[dayposition+skipday][1]);
                         params.put("Time", button.getText().toString());
                         return params;
                     }
                 };
-
-
-//                RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-//                requestQueue.add(stringRequest);
-
                 RequestHandlerSingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
-
 
             }
         });
-        System.out.println("--------- Appointment Info --------------");
-        System.out.println("The Day is : " + calender[dayposition][0]);
-        System.out.println("The Date is : " + calender[dayposition][1]);
-        System.out.println("The Time is : " + button.getText());
+
     }
 
     public void resetcolors() {

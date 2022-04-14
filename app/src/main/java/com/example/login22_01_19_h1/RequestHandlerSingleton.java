@@ -15,7 +15,6 @@ import com.android.volley.toolbox.Volley;
     private RequestHandlerSingleton(Context context) {
         ctx = context;
         requestQueue = getRequestQueue();
-
     }
     public static synchronized RequestHandlerSingleton getInstance(Context context) {
         if (instance == null) {

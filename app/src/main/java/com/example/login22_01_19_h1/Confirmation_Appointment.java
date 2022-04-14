@@ -3,7 +3,6 @@ package com.example.login22_01_19_h1;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 public class Confirmation_Appointment extends AppCompatActivity {

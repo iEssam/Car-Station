@@ -3,13 +3,15 @@ package com.example.login22_01_19_h1;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
+
 
 import com.example.login22_01_19_h1.LoginSingup.Login_MySql;
 
@@ -23,7 +25,8 @@ import com.example.login22_01_19_h1.Menu.Navigation_Main;
 public class MainActivity extends AppCompatActivity  {
     Button login, Reg;
     Toolbar toolbar;
-    DBHelper dbHelper;
+    ImageView logo;
+    Drawable myDrawable;
     private static Context context;
 
     @Override
@@ -48,6 +51,10 @@ public class MainActivity extends AppCompatActivity  {
             startActivity(new Intent(this , Navigation_Main.class));
         return;
         }
+
+        logo = findViewById(R.id.logo1);
+        myDrawable = getResources().getDrawable(R.drawable.car_logo);
+        logo.setImageDrawable(myDrawable);
 
         login = (Button) findViewById(R.id.btnLogin);
         toolbar = (Toolbar) findViewById(R.id.tool_main);

@@ -1,14 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
+
+    <ImageView
+        android:id="@+id/UserImage"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="49dp" />
+
     <TextView
+        android:id="@+id/UserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Profile Fragment"
-        android:textSize="30sp" />
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="69dp"
+        android:layout_toEndOf="@+id/UserImage"
+        android:text="username"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/theEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/UserName"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="19dp"
+        android:layout_toEndOf="@+id/UserImage"
+        android:text="the email "
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/resetpasstext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/UserImage"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="45dp"
+        android:text="Reset Your password :"
+        android:textSize="18dp" />
+
+    <Button
+        android:id="@+id/restPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextnewPassword"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Reset Password" />
+
+    <TextView
+        android:id="@+id/oldpass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/resetpasstext"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Enter Your Old Password :"
+        android:textSize="18dp" />
+
+    <EditText
+        android:id="@+id/editTextoldPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/oldpass"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:hint="Type the Old Password"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/newpass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextoldPassword"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="11dp"
+        android:text="Enter Your New Password :"
+        android:textSize="18dp" />
+
+    <EditText
+        android:id="@+id/editTextnewPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/newpass"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:hint="Type the New Password"
+        android:inputType="textPassword" />
+
 
 </RelativeLayout>

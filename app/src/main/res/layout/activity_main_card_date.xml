@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="10dp"
-    tools:context=".MainActivity_Card_Date">
+    android:padding="10dp">
+<!--    tools:context=".MainActivity_Card_Date">-->
 
     <TextView
         android:id="@+id/textView"

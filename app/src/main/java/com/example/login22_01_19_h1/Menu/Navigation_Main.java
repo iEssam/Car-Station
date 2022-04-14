@@ -9,7 +9,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -22,6 +21,7 @@ import com.google.android.material.navigation.NavigationView;
 
 public class Navigation_Main extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    // Declear Drawer Layout Of the Page
     private DrawerLayout drawer;
 
     @Override
@@ -29,47 +29,42 @@ public class Navigation_Main extends AppCompatActivity implements NavigationView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_main);
 
+        // Move it To Login Page If it's Not Logged in
         if(!SharedPrefManger.getInstance(this).isLoggedIn()){
             finish();
             startActivity(new Intent(this , Login_MySql.class));
-
         }
 
-        NavigationView navigationView2 = findViewById(R.id.nav_view);
-        View headerView = navigationView2.getHeaderView(0);
+        // Navigation View Contain The Fragments
+        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        // Declear The Header Of Navigation
+        View headerView = navigationView.getHeaderView(0);
+
+        // Declear Compnent Of Header
         TextView txUserName = (TextView) headerView.findViewById(R.id.UserName);
         TextView txUserEmail = (TextView) headerView.findViewById(R.id.UserEmail);
-        TextView txUserId = (TextView) headerView.findViewById(R.id.UserId);
+
+        // Setting Info in Compnent Of Header
         txUserName.setText(SharedPrefManger.getInstance(this).getUserName() + "");
         txUserEmail.setText(SharedPrefManger.getInstance(this).getUserEmail() + "");
-        txUserId.setText(SharedPrefManger.getInstance(this).getUserId() + "");
-        Log.println(Log.ASSERT, "NAV", SharedPrefManger.getInstance(this).getUserId() + ":");
 
-
-
-
+        // ToolBar in The Top Of Screen Declaeration
         Toolbar toolbar1 = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar1);
 
-//
-//        TextView txUserName = (TextView) findViewById(R.id.UserName);
-//        txUserName.setText(SharedPrefManger.getInstance(this).getUserName().toString());
-//
-//        TextView txUserEmai = (TextView) findViewById(R.id.UserEmail);
-//        txUserEmai.setText(SharedPrefManger.getInstance(this).getUserEmail().toString());
-
-//        Log.println(Log.ASSERT, "NAV",SharedPrefManger.getInstance(this).getUserEmail().toString());
-
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        // Listener For The Item Of The The Navigation
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Activate The Navigation
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar1,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null) { // Open Home If The State Null
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new HomeFragment()).commit();
             navigationView.setCheckedItem(R.id.home);
@@ -78,15 +73,13 @@ public class Navigation_Main extends AppCompatActivity implements NavigationView
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Move To Pages Selected
         switch (item.getItemId()) {
             case R.id.nav_person:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ProfileFragment()).commit();
                 break;
-            case R.id.nav_Reservation:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new BookingFragment()).commit();
-                break;
+
             case R.id.nav_home:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new HomeFragment()).commit();
@@ -96,19 +89,12 @@ public class Navigation_Main extends AppCompatActivity implements NavigationView
                         new HistoryFragment()).commit();
 
                 break;
-            case R.id.nav_Centers:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new CentersFragment()).commit();
-
-                break;
             case R.id.Logout:
-//                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
                 SharedPrefManger.getInstance(this).Logout();
                 Intent intent1 = new Intent(this, Login_MySql.class);
                 startActivity(intent1);
 
                 break;
-
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -124,11 +110,8 @@ public class Navigation_Main extends AppCompatActivity implements NavigationView
         }
     }
 
-
-
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
-
 }
